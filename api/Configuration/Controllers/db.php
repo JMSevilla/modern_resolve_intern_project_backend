@@ -60,4 +60,9 @@ class DBHelper {
     public function php_row_checker(){
         return DBParams::$stmt->rowCount() > 0;
     }
+    public function pro_binding($data) {
+        foreach($data as $x => $val) {
+            return $this->php_bind(":".$x , $val);
+        }
+    }
 }

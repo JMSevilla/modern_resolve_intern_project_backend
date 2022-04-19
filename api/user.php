@@ -24,5 +24,6 @@ if(isset($_POST['regTrigger']) === true) {
         'username' => $_POST['username'],
         'password' => $_POST['password']
     ];
-    echo json_encode(array("res" => $data));
+    $callback = new userController();
+    $callback->devRegistration($data);
 }
