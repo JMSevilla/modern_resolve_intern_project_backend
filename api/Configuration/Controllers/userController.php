@@ -40,12 +40,21 @@ class userController extends DBHelper implements userInterface {
         $query = new QueryHelper();
         if($serverChecker->POSTCHECKER()){
             if($this->php_prepare($query->postDev("post/dev"))) {
-                $this->pro_binding($data);
+                $this->php_bind(":fname", $data['fname']);
+                $this->php_bind(":lname", $data['lname']);
+                $this->php_bind(":username", $data['username']);
+                $this->php_bind(":password", $data['password']);
+                $this->php_bind(":occupationStatus", $data['occupationStatus']);
+                $this->php_bind(":occupationDetails", $data['occupationDetails']);
+                $this->php_bind(":occupationPositionWork", $data['occupationPositionWork']);
+                $this->php_bind(":nameOfSchool", $data['nameOfSchool']);
+                $this->php_bind(":degree", $data['degree']);
+                $this->php_bind(":address", $data['address']);
                 if($this->php_execute()){
                     echo $this->php_responses(
                         true,
                         "single",
-                        (object)[0 => array("key" => "success_dev_registration")]
+                        (object)[0 => array("key" => "dev_registration_success")]
                     ); 
                 }
             }
