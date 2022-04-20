@@ -18,7 +18,7 @@ if(isset($_POST['regTrigger']) === true) {
         'occupationStatus' => $_POST['occupationStatus'],
         'occupationDetails' => $_POST['occupationDetails'],
         'occupationPositionWork' => $_POST['occupationPositionWork'],
-        'nameofSchool' => $_POST['nameOfSchool'],
+        'nameOfSchool' => $_POST['nameOfSchool'],
         'degree' => $_POST['degree'],
         'address' => $_POST['address'],
         'username' => $_POST['username'],
