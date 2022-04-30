@@ -7,7 +7,7 @@ class DBParams {
     public static $db = "dbmodern";
     public static $stmt;
     public static $helper;
-
+    public static $tokenSetter;
 }
 
 class DBHelper {
@@ -59,5 +59,15 @@ class DBHelper {
     }
     public function php_row_checker(){
         return DBParams::$stmt->rowCount() > 0;
+    }
+    public function php_fetch_row(){ 
+        return DBParams::$stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    public function php_password_verify($request, $getPassword) {
+        return password_verify($request, $getPassword);
+    }
+    public function tokenGen()
+    {
+        return bin2hex(random_bytes(16));
     }
 }

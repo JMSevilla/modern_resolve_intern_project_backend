@@ -27,3 +27,12 @@ if(isset($_POST['regTrigger']) === true) {
     $callback = new userController();
     $callback->devRegistration($data);
 }
+
+if(isset($_POST['userLogin']) === true) {
+    $data = [ 
+        'uname' => $_POST['username'],
+        'pwd' => $_POST['password']
+    ];
+    $callback = new userController();
+    $callback->userLogin($data);
+}

@@ -6,6 +6,11 @@ interface ServerInterface
 interface Queryable {
     public function checkUser($args);
     public function postDev($args);
+    public function postLogin($payload);
+    public function tokenCheck($payload);
+    public function tokenEntry($payload);
+    public function tokenValidation($payload);
+    public function initFetchTokenization($payload);
 }
 class QueryHelper implements Queryable{
     public function checkUser($args)
@@ -22,7 +27,38 @@ class QueryHelper implements Queryable{
         }
         
     }
-}
+    public function postLogin($payload) {
+        if($payload == "post/login") {
+            $sql = "select * from users where username=:uname";
+            return $sql;
+        }
+    }
+    public function tokenCheck($payload){
+        if($payload === 'tokenization/check') {
+            $sql = "select token from tokenization where userID=:id and isDestroyed='0'";
+            return $sql;
+        }
+    }
+    public function tokenEntry($payload){
+        if($payload === 'tokenization/entry') {
+            $sql = "insert into tokenization values(default, :id, :token, :lastroute, :isdestroyed, current_timestamp, :isvalid)";
+            return $sql;
+        }
+    }
+    public function tokenValidation($payload) {
+        if($payload === 'tokenization/check/validation') {
+            $sql = "select * from tokenization where userID=:uid";
+            return $sql;
+        }
+    }
+    public function initFetchTokenization($payload) 
+    {
+        if($payload === 'tokenization/get') {
+            $sql = "select * from tokenization where userID=:uid";
+            return $sql;
+        }
+    }
+ }
 class Server implements ServerInterface {
     public function POSTCHECKER()
     {
