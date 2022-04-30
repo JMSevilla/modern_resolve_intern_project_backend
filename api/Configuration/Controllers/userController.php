@@ -1,10 +1,11 @@
 <?php
 include_once __DIR__ . "/db.php";
 include_once __DIR__ . "/queries.php";
-
+include_once __DIR__ . "/cookieManagement/cookie.php";
 interface userInterface {
     public function checkUser($data);
     public function devRegistration($data);
+    public function userLogin($data);
 }
 
 class userController extends DBHelper implements userInterface {
@@ -56,6 +57,157 @@ class userController extends DBHelper implements userInterface {
                         "single",
                         (object)[0 => array("key" => "dev_registration_success")]
                     ); 
+                }
+            }
+        }
+    }
+    public function userLogin($data) {
+        $serverChecker = new Server();
+        $query = new QueryHelper();
+        if($serverChecker->POSTCHECKER()) {
+            if($this->php_prepare($query->postLogin("post/login"))) {
+                $this->php_bind(":uname", $data['uname']);
+                if($this->php_execute()){
+                    if($this->php_row_checker()) {
+                        $get = $this->php_fetch_row();
+                        $pass = $get['password'];
+                        $istype = $get['userType'];
+                        $islock = $get['isLock'];
+                        $uid = $get['id'];
+                        $fname = $get['firstname'];
+                        $lname = $get['lastname'];
+                        $uname = $get['username'];
+                        if($this->php_password_verify($data['pwd'], $pass)) {
+                            if($islock === '1'){
+                                //lock
+                                echo $this->php_responses(
+                                    true,
+                                    "single",
+                                    (object)[0 => array("key" => "ACCOUNT_LOCK")]
+                                );
+                            } else {
+                                if($istype === '2') {
+                                    //dev
+                                    //token update
+                                    //route to dev dashboard
+                                    $INIT_TOKEN = new Tokenization();
+                                    $INIT_TOKEN->checkAuthentication($uid, "developer_dashboard");
+                                    $INIT_TOKEN->initFetchAuthentication($uid);
+                                    $logged_array = [
+                                        "fname" => $fname,
+                                        "lname" => $lname,
+                                        "uname" => $uname,
+                                        "message" => "success_developer",
+                                        "role" => "developer"
+                                    ];
+                                    echo $this->php_responses(
+                                        true,
+                                        "single",
+                                        (object)[0 => array("key" => $logged_array)]
+                                    );
+                                }
+                            }
+                        } else { 
+                            echo $this->php_responses(
+                                true,
+                                "single",
+                                (object)[0 => array("key" => "PASSWORD_INVALID")]
+                            ); 
+                        }
+                    }else {
+                        echo $this->php_responses(
+                            true,
+                            "single",
+                            (object)[0 => array("key" => "ACCOUNT_NOT_FOUND")]
+                        ); 
+                    }
+                }
+            }
+        }
+    }
+}
+
+interface Authtoken { 
+    public function setTokenState($istoken);
+}
+
+class Authentication extends DBHelper implements Authtoken {
+    public function setTokenState($istoken = null) {
+        DBParams::$tokenSetter = $istoken;
+        return DBParams::$tokenSetter . $this->tokenGen();
+    }
+}
+
+interface TokenizationConfig { 
+    public function AuthenticationEntry($userID, $lastroute);
+    public function checkAuthentication($userID, $lastroute);
+    public function initFetchAuthentication($userID);
+}
+
+class Tokenization extends DBHelper implements TokenizationConfig {
+    public function AuthenticationEntry($userID, $lastroute) {
+        $serverChecker = new Server();
+        $query = new QueryHelper();
+        if($serverChecker->POSTCHECKER()){
+            $Authentication = new Authentication();
+            if($this->php_prepare($query->tokenEntry("tokenization/entry"))) {
+                $this->php_bind(":token", $Authentication->setTokenState("Basic:"));
+                $this->php_bind(":id", $userID);
+                $this->php_bind(":lastroute", $lastroute);
+                $this->php_bind(":isdestroy", "0");
+                $this->php_bind(":isvalid", "1");
+                $this->php_execute();
+            }
+        }
+    }
+    public function checkAuthentication($userID, $lastroute) {
+        $serverChecker = new Server();
+        $query = new QueryHelper();
+        if($serverChecker->POSTCHECKER()) {
+            if($this->php_prepare($query->tokenValidation("tokenization/check/validation"))) {
+                $this->php_bind(":uid", $userID);
+                if($this->php_execute()) {
+                    if($this->php_row_checker()) {
+                        $get = $this->php_fetch_row();
+                        if($get['isvalid'] === '1') { 
+                            //update token
+                        }
+                        else {
+                            $this->AuthenticationEntry($userID, $lastroute);
+                        }
+                    }else {
+
+                    }
+                }
+            }
+        }
+    }
+    public function initFetchAuthentication($userID) { 
+        $serverChecker = new Server();
+        $query = new QueryHelper();
+        $AuthenticationCookie = new AuthCookieManagement();
+        if($serverChecker->POSTCHECKER()) {
+            if($this->php_prepare($query->initFetchTokenization("tokenization/get"))) {
+                $this->php_bind(":uid", $userID);
+                if($this->php_execute()) {
+                    if($this->php_row_checker()) {
+                        $get = $this->php_fetch_row();
+                        $AuthenticationCookie->authCookieSetter(
+                            $get['token'],
+                            time() + 60*60*24*7,
+                            '/',
+                            true,
+                            true,
+                            'None',
+                            'admin_tokenization'
+                        );
+                    } else {
+                        echo $this->php_responses(
+                            true,
+                            "single",
+                            (object)[0 => array("key" => "account_disabled")]
+                        );
+                    }
                 }
             }
         }
