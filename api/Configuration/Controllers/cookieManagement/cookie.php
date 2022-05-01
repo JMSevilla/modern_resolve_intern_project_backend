@@ -24,7 +24,7 @@ class AuthCookieManagement implements IAuthenticationCookie {
     public function authCookieSetter($tokenRequest, $tokenTimeStamp, $tokenPath, $isSecure, $isHttp, $isSameSite, $tokenName)
     {
         TokenParams::$tokenInitialize = array (
-            'expired' => $tokenTimeStamp,
+            'expires' => $tokenTimeStamp,
             'path' => $tokenPath,
             'secure' => $isSecure,
             'httponly' => $isHttp,

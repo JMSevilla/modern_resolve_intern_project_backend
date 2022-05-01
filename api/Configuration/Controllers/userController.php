@@ -44,7 +44,7 @@ class userController extends DBHelper implements userInterface {
                 $this->php_bind(":fname", $data['fname']);
                 $this->php_bind(":lname", $data['lname']);
                 $this->php_bind(":username", $data['username']);
-                $this->php_bind(":password", $data['password']);
+                $this->php_bind(":password", $this->php_password_hash($data['password']));
                 $this->php_bind(":occupationStatus", $data['occupationStatus']);
                 $this->php_bind(":occupationDetails", $data['occupationDetails']);
                 $this->php_bind(":occupationPositionWork", $data['occupationPositionWork']);
@@ -151,10 +151,11 @@ class Tokenization extends DBHelper implements TokenizationConfig {
         if($serverChecker->POSTCHECKER()){
             $Authentication = new Authentication();
             if($this->php_prepare($query->tokenEntry("tokenization/entry"))) {
-                $this->php_bind(":token", $Authentication->setTokenState("Basic:"));
                 $this->php_bind(":id", $userID);
+                $this->php_bind(":token", $Authentication->setTokenState("Basic:"));
+                
                 $this->php_bind(":lastroute", $lastroute);
-                $this->php_bind(":isdestroy", "0");
+                $this->php_bind(":isdestroyed", "0");
                 $this->php_bind(":isvalid", "1");
                 $this->php_execute();
             }
@@ -176,7 +177,7 @@ class Tokenization extends DBHelper implements TokenizationConfig {
                             $this->AuthenticationEntry($userID, $lastroute);
                         }
                     }else {
-
+                         $this->AuthenticationEntry($userID, $lastroute);
                     }
                 }
             }
