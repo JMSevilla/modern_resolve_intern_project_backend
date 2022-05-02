@@ -4,7 +4,9 @@ include_once __DIR__ . "/queries.php";
 include_once __DIR__ . "/cookieManagement/cookie.php";
 interface userInterface {
     public function checkUser($data);
+    public function checkUserClient($data);
     public function devRegistration($data);
+    public function clientRegistration($data);  
     public function userLogin($data);
 }
 
@@ -36,6 +38,33 @@ class userController extends DBHelper implements userInterface {
             }
         }
     }
+    public function checkUserClient($data)
+    {
+        $serverChecker = new Server();
+        $query = new QueryHelper();
+        if($serverChecker->POSTCHECKER()){
+            if($this->php_prepare($query->checkClient("clients"))){
+                $this->php_bind(":uname", $data['uname']);
+                if($this->php_execute()){
+                    if($this->php_row_checker()){
+                        // exist
+                        echo $this->php_responses(
+                            true,
+                            "single",
+                            (object)[0 => array("key" => "client_username_taken")]
+                        );
+                    }else{
+                        // not exist
+                        echo $this->php_responses(
+                            true,
+                            "single",
+                            (object)[0 => array("key" => "client_username_available")]
+                        );
+                    }
+                }
+            }
+        }
+    }
     public function devRegistration($data) {
         $serverChecker = new Server();
         $query = new QueryHelper();
@@ -56,6 +85,30 @@ class userController extends DBHelper implements userInterface {
                         true,
                         "single",
                         (object)[0 => array("key" => "dev_registration_success")]
+                    ); 
+                }
+            }
+        }
+    }
+    public function clientRegistration($data) {
+        $serverChecker = new Server();
+        $query = new QueryHelper();
+        if($serverChecker->POSTCHECKER()){
+            if($this->php_prepare($query->postClient("post/client"))) {
+                $this->php_bind(":clientfname", $data['clientfname']);
+                $this->php_bind(":clientlname", $data['clientlname']);
+                $this->php_bind(":clientemail", $data['clientemail']);
+                $this->php_bind(":clientcontact", $data['clientcontact']);
+                $this->php_bind(":clientaddress", $data['clientaddress']);
+                $this->php_bind(":clientusername", $data['clientusername']);
+                $this->php_bind(":clientpassword", $data['clientpassword']);
+                $this->php_bind(":clientsecquestion", $data['clientsecquestion']);
+                $this->php_bind(":clientsecanswer", $data['clientsecanswer']);
+                if($this->php_execute()){
+                    echo $this->php_responses(
+                        true,
+                        "single",
+                        (object)[0 => array("key" => "client_registration_success")]
                     ); 
                 }
             }

@@ -5,7 +5,9 @@ interface ServerInterface
 }
 interface Queryable {
     public function checkUser($args);
+    public function checkClient($args);
     public function postDev($args);
+    public function postClient($args);
     public function postLogin($payload);
     public function tokenCheck($payload);
     public function tokenEntry($payload);
@@ -18,10 +20,24 @@ class QueryHelper implements Queryable{
         $sql = "select * from ".$args." where username=:uname";
         return $sql;
     }
+    public function checkClient($args)
+    {
+        $sql = "select * from ".$args." where username=:uname";
+        return $sql;
+    }
     public function postDev($args) {
         if($args == "post/dev") {
             $sql = "CALL dev_proc(:fname, :lname, :username, :password,
             :occupationStatus, :occupationDetails, :occupationPositionWork, :nameOfSchool, :degree, :address
+            )";
+            return $sql;
+        }
+        
+    }
+    public function postClient($args) {
+        if($args == "post/client") {
+            $sql = "CALL client_proc(:clientfname, :clientlname, :clientemail, :clientcontact,
+            :clientaddress, :clientusername, :clientpassword, :clientsecquestion, :clientsecanswer
             )";
             return $sql;
         }
