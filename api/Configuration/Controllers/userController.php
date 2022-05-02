@@ -44,7 +44,7 @@ class userController extends DBHelper implements userInterface {
                 $this->php_bind(":fname", $data['fname']);
                 $this->php_bind(":lname", $data['lname']);
                 $this->php_bind(":username", $data['username']);
-                $this->php_bind(":password", $data['password']);
+                $this->php_bind(":password", $this->php_password_encrypt($data['password']));
                 $this->php_bind(":occupationStatus", $data['occupationStatus']);
                 $this->php_bind(":occupationDetails", $data['occupationDetails']);
                 $this->php_bind(":occupationPositionWork", $data['occupationPositionWork']);
@@ -62,7 +62,8 @@ class userController extends DBHelper implements userInterface {
         }
     }
     public function userLogin($data) {
-        $serverChecker = new Server();
+        if($data['role'] === 'developer'){
+            $serverChecker = new Server();
         $query = new QueryHelper();
         if($serverChecker->POSTCHECKER()) {
             if($this->php_prepare($query->postLogin("post/login"))) {
@@ -91,14 +92,15 @@ class userController extends DBHelper implements userInterface {
                                     //token update
                                     //route to dev dashboard
                                     $INIT_TOKEN = new Tokenization();
-                                    $INIT_TOKEN->checkAuthentication($uid, "developer_dashboard");
+                                    $INIT_TOKEN->checkAuthentication($uid, "developer_platform");
                                     $INIT_TOKEN->initFetchAuthentication($uid);
                                     $logged_array = [
                                         "fname" => $fname,
                                         "lname" => $lname,
                                         "uname" => $uname,
                                         "message" => "success_developer",
-                                        "role" => "developer"
+                                        "role" => "developer",
+                                        "uid" => $uid
                                     ];
                                     echo $this->php_responses(
                                         true,
@@ -124,6 +126,15 @@ class userController extends DBHelper implements userInterface {
                 }
             }
         }
+        }
+        else {
+            ///client login
+            echo $this->php_responses(
+                true,
+                "single",
+                (object)[0 => array("key" => "CLIENT_ACCOUNT")]
+            ); 
+        }
     }
 }
 
@@ -142,6 +153,7 @@ interface TokenizationConfig {
     public function AuthenticationEntry($userID, $lastroute);
     public function checkAuthentication($userID, $lastroute);
     public function initFetchAuthentication($userID);
+    public function tokenIdentify($userID);
 }
 
 class Tokenization extends DBHelper implements TokenizationConfig {
@@ -151,10 +163,10 @@ class Tokenization extends DBHelper implements TokenizationConfig {
         if($serverChecker->POSTCHECKER()){
             $Authentication = new Authentication();
             if($this->php_prepare($query->tokenEntry("tokenization/entry"))) {
-                $this->php_bind(":token", $Authentication->setTokenState("Basic:"));
                 $this->php_bind(":id", $userID);
+                $this->php_bind(":token", $Authentication->setTokenState("Basic:"));
                 $this->php_bind(":lastroute", $lastroute);
-                $this->php_bind(":isdestroy", "0");
+                $this->php_bind(":isdestroyed", "0");
                 $this->php_bind(":isvalid", "1");
                 $this->php_execute();
             }
@@ -176,7 +188,7 @@ class Tokenization extends DBHelper implements TokenizationConfig {
                             $this->AuthenticationEntry($userID, $lastroute);
                         }
                     }else {
-
+                        $this->AuthenticationEntry($userID, $lastroute);
                     }
                 }
             }
@@ -207,6 +219,59 @@ class Tokenization extends DBHelper implements TokenizationConfig {
                             "single",
                             (object)[0 => array("key" => "account_disabled")]
                         );
+                    }
+                }
+            }
+        }
+    }
+    public function tokenIdentify($userID){
+        if($userID === 'unknown') {
+            echo $this->php_responses(
+                true,
+                "single",
+                (object)[0 => array("key" => "invalid_token")]
+            );
+        } else { 
+            $serverChecker = new Server();
+            $query = new QueryHelper();
+            if($serverChecker->POSTCHECKER()) {
+                if($this->php_prepare($query->initCheckTokenization("tokenization/checking"))) {
+                    $this->php_bind(":uid", $userID);
+                    if($this->php_execute()) {
+                        if($this->php_row_checker()) {
+                            $fetch = $this->php_fetch_row();
+                            if($fetch['isvalid'] === '1') {
+                                if($fetch['lastRoute'] === 'developer_platform') {
+                                    //get dev info profile
+                                    if($this->php_prepare($query->get_current_user_info("user/getinformation"))){
+                                        $this->php_bind(":uid", $userID);
+                                        if($this->php_execute()){
+                                            $getUserInfo = $this->php_fetch_row();
+                                            $userArray = [
+                                                'fname' => $getUserInfo['firstname'],
+                                                'lname' => $getUserInfo['lastname'],
+                                                'uname' => $getUserInfo['username'],
+                                                'imgurl' => $getUserInfo['imgURL'],
+                                                'key' => 'token_exist_dev_platform'
+                                            ];
+                                            echo $this->php_responses(
+                                                true,
+                                                "single",
+                                                (object)[0 => array("key" => $userArray)]
+                                            );
+                                        }
+                                    }
+                                    
+                                }
+                            }
+                        }else{
+                            //invalid token
+                            echo $this->php_responses(
+                                true,
+                                "single",
+                                (object)[0 => array("key" => "invalid_token")]
+                            );
+                        }
                     }
                 }
             }

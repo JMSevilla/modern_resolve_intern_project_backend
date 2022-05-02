@@ -31,8 +31,15 @@ if(isset($_POST['regTrigger']) === true) {
 if(isset($_POST['userLogin']) === true) {
     $data = [ 
         'uname' => $_POST['username'],
-        'pwd' => $_POST['password']
+        'pwd' => $_POST['password'],
+        'role' => $_POST['role']
     ];
     $callback = new userController();
     $callback->userLogin($data);
+}
+
+if(isset($_POST['tokenstate']) === true) 
+{
+    $tokenization = new Tokenization();
+    $tokenization->tokenIdentify($_POST['token']);
 }
