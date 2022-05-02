@@ -15,6 +15,10 @@ interface IAuthenticationCookie {
     );
 }
 
+interface IscanauthenticationCookie { 
+    public function tokenValidate($args);
+}
+
 class TokenParams
 {
     public static $tokenInitialize = null;
@@ -24,7 +28,7 @@ class AuthCookieManagement implements IAuthenticationCookie {
     public function authCookieSetter($tokenRequest, $tokenTimeStamp, $tokenPath, $isSecure, $isHttp, $isSameSite, $tokenName)
     {
         TokenParams::$tokenInitialize = array (
-            'expired' => $tokenTimeStamp,
+            'expires' => $tokenTimeStamp,
             'path' => $tokenPath,
             'secure' => $isSecure,
             'httponly' => $isHttp,
@@ -32,4 +36,15 @@ class AuthCookieManagement implements IAuthenticationCookie {
         );
         setcookie($tokenName, $tokenRequest, TokenParams::$tokenInitialize);
     }
+}
+
+class ScanToken extends DBHelper implements IscanauthenticationCookie {
+    public function tokenValidate($args)
+    {
+        
+    }
+}
+
+if(isset($_POST['scanToken']) === true) {
+    
 }

@@ -11,6 +11,8 @@ interface Queryable {
     public function tokenEntry($payload);
     public function tokenValidation($payload);
     public function initFetchTokenization($payload);
+    public function initCheckTokenization($payload);
+    public function get_current_user_info($payload);
 }
 class QueryHelper implements Queryable{
     public function checkUser($args)
@@ -55,6 +57,18 @@ class QueryHelper implements Queryable{
     {
         if($payload === 'tokenization/get') {
             $sql = "select * from tokenization where userID=:uid";
+            return $sql;
+        }
+    }
+    public function initCheckTokenization($payload) {
+        if($payload === 'tokenization/checking') {
+            $sql = "select * from tokenization where userID=:uid and isvalid='1'";
+            return $sql;
+        }
+    }
+    public function get_current_user_info($payload){
+        if($payload === 'user/getinformation') {
+            $sql = "select * from users where id=:uid";
             return $sql;
         }
     }

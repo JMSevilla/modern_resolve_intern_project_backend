@@ -70,4 +70,7 @@ class DBHelper {
     {
         return bin2hex(random_bytes(16));
     }
+    public function php_password_encrypt($payload) {
+        return password_hash($payload, PASSWORD_DEFAULT);
+    }
 }
