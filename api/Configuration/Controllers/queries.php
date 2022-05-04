@@ -30,8 +30,7 @@ class QueryHelper implements Queryable{
     public function postDev($args) {
         if($args == "post/dev") {
             $sql = "CALL dev_proc(:fname, :lname, :username, :password,
-            :occupationStatus, :occupationDetails, :occupationPositionWork, :nameOfSchool, :degree, :address
-            )";
+            :occupationStatus, :occupationDetails, :occupationPositionWork, :nameOfSchool, :degree, :address)";
             return $sql;
         }
         

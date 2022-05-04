@@ -23,14 +23,15 @@ if(isset($_POST['regTrigger']) === true) {
     $data = [
         'fname' => $_POST['fname'],
         'lname' => $_POST['lname'],
+        'username' => $_POST['username'],
+        'password' => $_POST['password'],
         'occupationStatus' => $_POST['occupationStatus'],
         'occupationDetails' => $_POST['occupationDetails'],
         'occupationPositionWork' => $_POST['occupationPositionWork'],
         'nameOfSchool' => $_POST['nameOfSchool'],
         'degree' => $_POST['degree'],
-        'address' => $_POST['address'],
-        'username' => $_POST['username'],
-        'password' => $_POST['password']
+        'address' => $_POST['address']
+
     ];
     $callback = new userController();
     $callback->devRegistration($data);

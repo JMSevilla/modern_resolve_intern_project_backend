@@ -4,6 +4,8 @@ include_once __DIR__ . "/queries.php";
 include_once __DIR__ . "/cookieManagement/cookie.php";
 interface userInterface {
     public function checkUser($data);
+    public function checkClient($data);
+    public function clientRegistration($data);
     public function devRegistration($data);
     public function userLogin($data);
 }
@@ -98,10 +100,10 @@ class userController extends DBHelper implements userInterface {
                 $this->php_bind(":clientfname", $data['clientfname']);
                 $this->php_bind(":clientlname", $data['clientlname']);
                 $this->php_bind(":clientemail", $data['clientemail']);
-                $this->php_bind(":clientcontact", $this->php_password_encrypt($data['clientcontact']));
+                $this->php_bind(":clientcontact",$data['clientcontact']);
                 $this->php_bind(":clientaddress", $data['clientaddress']);
                 $this->php_bind(":clientusername", $data['clientusername']);
-                $this->php_bind(":clientpassword", $data['clientpassword']);
+                $this->php_bind(":clientpassword", $this->php_password_encrypt($data['clientpassword']));
                 $this->php_bind(":clientsecquestion", $data['clientsecquestion']);
                 $this->php_bind(":clientsecanswer", $data['clientsecanswer']);
                 if($this->php_execute()){
