@@ -9,3 +9,10 @@ if(isset($_POST['userTrigger']) === true) {
     $callback = new userController();
     $callback->checkUser($data);
 }
+if(isset($_POST['clientTrigger']) === true) {
+    $data = [
+        'uname' => $_POST['clientusername']
+    ];
+    $callback = new userController();
+    $callback->checkClient($data);
+}

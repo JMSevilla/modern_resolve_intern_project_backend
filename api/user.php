@@ -22,4 +22,21 @@ if(isset($_POST['regTrigger']) === true) {
     $callback->devRegistration($data);
 }
 
+if(isset($_POST['clientRegTrigger']) === true) {
+    $data = [
+        'clientfname' => $_POST['clientfname'],
+        'clientlname' => $_POST['clientlname'],
+        'clientemail' => $_POST['clientemail'],
+        'clientcontact' => $_POST['clientcontact'],
+        'clientaddress' => $_POST['clientaddress'],
+        'clientusername' => $_POST['clientusername'],
+        'clientpassword' => $_POST['clientpassword'],
+        'clientsecquestion' => $_POST['clientsecquestion'],
+        'clientsecanswer' => $_POST['clientsecanswer'],
+    ];
+    $callback = new userController();
+    $callback->clientRegistration($data);
+}
+
+
 
