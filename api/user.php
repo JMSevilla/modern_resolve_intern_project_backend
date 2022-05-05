@@ -3,13 +3,7 @@
 include("./Configuration/Security/headers.php");
 include_once "./Configuration/Controllers/userController.php";
 
-if(isset($_POST['userTrigger']) === true) {
-    $data = [
-        'uname' => $_POST['username']
-    ];
-    $callback = new userController();
-    $callback->checkUser($data);
-}
+
 
 if(isset($_POST['regTrigger']) === true) {
     $data = [
@@ -28,18 +22,4 @@ if(isset($_POST['regTrigger']) === true) {
     $callback->devRegistration($data);
 }
 
-if(isset($_POST['userLogin']) === true) {
-    $data = [ 
-        'uname' => $_POST['username'],
-        'pwd' => $_POST['password'],
-        'role' => $_POST['role']
-    ];
-    $callback = new userController();
-    $callback->userLogin($data);
-}
 
-if(isset($_POST['tokenstate']) === true) 
-{
-    $tokenization = new Tokenization();
-    $tokenization->tokenIdentify($_POST['token']);
-}

@@ -13,6 +13,7 @@ interface Queryable {
     public function initFetchTokenization($payload);
     public function initCheckTokenization($payload);
     public function get_current_user_info($payload);
+    public function dumpEntry($payload);
 }
 class QueryHelper implements Queryable{
     public function checkUser($args)
@@ -69,6 +70,12 @@ class QueryHelper implements Queryable{
     public function get_current_user_info($payload){
         if($payload === 'user/getinformation') {
             $sql = "select * from users where id=:uid";
+            return $sql;
+        }
+    }
+    public function dumpEntry($payload){ 
+        if($payload === 'tokenization/dump') {
+            $sql = "insert into dump_savedinfo values(default, :fname, :lname, :uname, :role, :uid, 'active')";
             return $sql;
         }
     }

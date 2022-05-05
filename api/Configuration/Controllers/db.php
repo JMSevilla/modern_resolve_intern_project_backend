@@ -24,6 +24,9 @@ class DBHelper {
     public function php_prepare($sql) {
         return DBParams::$stmt = $this->connect()->prepare($sql);
     }
+    public function php_query($sql) {
+        return DBParams::$stmt = $this->connect()->query($sql);
+    }
     public function php_bind($param, $val, $type = null) {
         if(is_null($type)){
             switch(true){

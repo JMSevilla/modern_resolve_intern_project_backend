@@ -252,6 +252,7 @@ class Tokenization extends DBHelper implements TokenizationConfig {
                                                 'lname' => $getUserInfo['lastname'],
                                                 'uname' => $getUserInfo['username'],
                                                 'imgurl' => $getUserInfo['imgURL'],
+                                                'uid' => $getUserInfo['id'],
                                                 'key' => 'token_exist_dev_platform'
                                             ];
                                             echo $this->php_responses(
