@@ -13,7 +13,9 @@ interface Queryable {
     public function initFetchTokenization($payload);
     public function initCheckTokenization($payload);
     public function get_current_user_info($payload);
+    //deprecated function dump
     public function dumpEntry($payload);
+    public function signOut($payload);
 }
 class QueryHelper implements Queryable{
     public function checkUser($args)
@@ -76,6 +78,12 @@ class QueryHelper implements Queryable{
     public function dumpEntry($payload){ 
         if($payload === 'tokenization/dump') {
             $sql = "insert into dump_savedinfo values(default, :fname, :lname, :uname, :role, :uid, 'active')";
+            return $sql;
+        }
+    }
+    public function signOut($payload){
+        if($payload === 'signout/tokendestroy'){
+            $sql = "update tokenization set isvalid='0' where userID=:uid";
             return $sql;
         }
     }
