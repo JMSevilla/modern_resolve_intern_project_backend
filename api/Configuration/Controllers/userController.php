@@ -154,6 +154,7 @@ interface TokenizationConfig {
     public function checkAuthentication($userID, $lastroute);
     public function initFetchAuthentication($userID);
     public function tokenIdentify($userID);
+    public function signoutDestroy($userID);
 }
 
 class Tokenization extends DBHelper implements TokenizationConfig {
@@ -264,7 +265,7 @@ class Tokenization extends DBHelper implements TokenizationConfig {
                                     }
                                     
                                 }
-                            }
+                            } 
                         }else{
                             //invalid token
                             echo $this->php_responses(
@@ -274,6 +275,22 @@ class Tokenization extends DBHelper implements TokenizationConfig {
                             );
                         }
                     }
+                }
+            }
+        }
+    }
+    public function signoutDestroy($userID){
+        $serverChecker = new Server();
+        $query = new QueryHelper();
+        if($serverChecker->POSTCHECKER()) {
+            if($this->php_prepare($query->signOut("signout/tokendestroy"))) {
+                $this->php_bind(":uid", $userID);
+                if($this->php_execute()) {
+                    echo $this->php_responses(
+                        true,
+                        "single",
+                        (object)[0 => array("key" => "SIGNOUT_SUCCESS")]
+                    );
                 }
             }
         }

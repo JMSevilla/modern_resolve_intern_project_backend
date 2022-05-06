@@ -7,3 +7,4 @@ if(isset($_POST['tokenstate']) === true)
     $tokenization = new Tokenization();
     $tokenization->tokenIdentify($_POST['token']);
 }
+
