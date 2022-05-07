@@ -18,6 +18,8 @@ interface Queryable {
     //deprecated function dump
     public function dumpEntry($payload);
     public function signOut($payload);
+    public function getplatforms($payload);
+    public function tokenRouteUpdater($payload);
 }
 class QueryHelper implements Queryable{
     public function checkUser($args)
@@ -99,6 +101,18 @@ class QueryHelper implements Queryable{
     public function signOut($payload){
         if($payload === 'signout/tokendestroy'){
             $sql = "update tokenization set isvalid='0' where userID=:uid";
+            return $sql;
+        }
+    }
+    public function getplatforms($payload){
+        if($payload === 'platforms/get') {
+            $sql = "select * from branches order by branchID";
+            return $sql;
+        }
+    }
+    public function tokenRouteUpdater($payload){
+        if($payload === 'token/route/updater'){
+            $sql = "update tokenization set lastRoute=:route where isvalid='1' and userID=:uid";
             return $sql;
         }
     }
