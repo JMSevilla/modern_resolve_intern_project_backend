@@ -309,7 +309,32 @@ class Tokenization extends DBHelper implements TokenizationConfig {
                                                 'uname' => $getUserInfo['username'],
                                                 'imgurl' => $getUserInfo['imgURL'],
                                                 'uid' => $getUserInfo['id'],
-                                                'key' => 'token_exist_dev_platform'
+                                                'key' => 'token_exist_dev_platform',
+                                                'lastroute' => $fetch['lastRoute']
+                                            ];
+                                            echo $this->php_responses(
+                                                true,
+                                                "single",
+                                                (object)[0 => array("key" => $userArray)]
+                                            );
+                                        }
+                                    }
+                                    
+                                }
+                                else if($fetch['lastRoute'] === '/developer/dashboard') {
+                                    //get dev info profile
+                                    if($this->php_prepare($query->get_current_user_info("user/getinformation"))){
+                                        $this->php_bind(":uid", $userID);
+                                        if($this->php_execute()){
+                                            $getUserInfo = $this->php_fetch_row();
+                                            $userArray = [
+                                                'fname' => $getUserInfo['firstname'],
+                                                'lname' => $getUserInfo['lastname'],
+                                                'uname' => $getUserInfo['username'],
+                                                'imgurl' => $getUserInfo['imgURL'],
+                                                'uid' => $getUserInfo['id'],
+                                                'key' => 'token_exist_dev_platform',
+                                                'lastroute' => $fetch['lastRoute']
                                             ];
                                             echo $this->php_responses(
                                                 true,
