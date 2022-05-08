@@ -8,6 +8,11 @@ if(isset($_POST['routeState']) === true ) {
             'route' => $_POST['route'],
             'id' => $_POST['id']
         ];
+    } else if($_POST['route'] === 'developer_platform'){
+        $data = [
+            'route' => $_POST['route'],
+            'id' => $_POST['id']
+        ];
     }
     $tokenRouteUpdater = new tokenRouteController();
     $tokenRouteUpdater->routeUpdater($data);
