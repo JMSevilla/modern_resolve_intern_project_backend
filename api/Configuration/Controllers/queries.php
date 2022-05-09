@@ -15,6 +15,8 @@ interface Queryable {
     public function initFetchTokenization($payload);
     public function initCheckTokenization($payload);
     public function get_current_user_info($payload);
+    public function postcreatedevUAM($payload);
+    public function uamcheck($payload);
     //deprecated function dump
     public function dumpEntry($payload);
     public function signOut($payload);
@@ -113,6 +115,19 @@ class QueryHelper implements Queryable{
     public function tokenRouteUpdater($payload){
         if($payload === 'token/route/updater'){
             $sql = "update tokenization set lastRoute=:route where isvalid='1' and userID=:uid";
+            return $sql;
+        }
+    }
+    public function postcreatedevUAM($payload){
+        if($payload === 'uam/post') {
+            $sql = "insert into users values(default, :fname, :lname, :uname, :pwd, :utype, :islock,
+            'None', current_timestamp, 'None', 'None', 'None', 'None', 'None', 'None')";
+            return $sql;
+        }
+    }
+    public function uamcheck($payload){
+        if($payload === 'uam/check'){
+            $sql = "select * from users where username=:uname";
             return $sql;
         }
     }
