@@ -46,7 +46,8 @@ class QueryHelper implements Queryable{
     public function postClient($args) {
         if($args == "post/client") {
             $sql = "CALL client_proc(:clientfname, :clientlname, :clientemail, :clientcontact,
-            :clientaddress, :clientusername, :clientpassword, :clientsecquestion, :clientsecanswer)";
+            :clientaddress, :clientusername, :clientpassword, :clientsecquestion, :clientsecanswer, :clientsystemtype,
+            :clientrequestorstatus, :clientprojectscale, :clientbudgetrange, :clientremarks, :clientpayment)";
             return $sql;
         }
         

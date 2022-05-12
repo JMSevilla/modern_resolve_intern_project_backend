@@ -33,6 +33,12 @@ if(isset($_POST['clientRegTrigger']) === true) {
         'clientpassword' => $_POST['clientpassword'],
         'clientsecquestion' => $_POST['clientsecquestion'],
         'clientsecanswer' => $_POST['clientsecanswer'],
+        'clientsystemtype' => $_POST['clientsystemtype'],
+        'clientrequestorstatus' => $_POST['clientrequestorstatus'],
+        'clientprojectscale' => $_POST['clientprojectscale'],
+        'clientbudgetrange' => $_POST['clientbudgetrange'],
+        'clientremarks' => $_POST['clientremarks'],
+        'clientpayment' => $_POST['clientpayment']
     ];
     $callback = new userController();
     $callback->clientRegistration($data);
