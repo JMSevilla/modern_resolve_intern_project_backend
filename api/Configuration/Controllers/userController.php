@@ -106,6 +106,12 @@ class userController extends DBHelper implements userInterface {
                 $this->php_bind(":clientpassword", $this->php_password_encrypt($data['clientpassword']));
                 $this->php_bind(":clientsecquestion", $data['clientsecquestion']);
                 $this->php_bind(":clientsecanswer", $data['clientsecanswer']);
+                $this->php_bind(":clientsystemtype", $data['clientsystemtype']);
+                $this->php_bind(":clientrequestorstatus", $data['clientrequestorstatus']);
+                $this->php_bind(":clientprojectscale", $data['clientprojectscale']);
+                $this->php_bind(":clientbudgetrange", $data['clientbudgetrange']);
+                $this->php_bind(":clientremarks", $data['clientremarks']);
+                $this->php_bind(":clientpayment", $data['clientpayment']);
                 if($this->php_execute()){
                     echo $this->php_responses(
                         true,
