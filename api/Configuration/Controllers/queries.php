@@ -22,6 +22,7 @@ interface Queryable {
     public function signOut($payload);
     public function getplatforms($payload);
     public function tokenRouteUpdater($payload);
+    public function listuam($payload);
 }
 class QueryHelper implements Queryable{
     public function checkUser($args)
@@ -129,6 +130,12 @@ class QueryHelper implements Queryable{
     public function uamcheck($payload){
         if($payload === 'uam/check'){
             $sql = "select * from users where username=:uname";
+            return $sql;
+        }
+    }
+    public function listuam($payload){
+        if($payload === 'uam/list') {
+            $sql = "select * from users";
             return $sql;
         }
     }
